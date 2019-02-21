@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Douglas Vieira">
+  <meta name="author" content="Imperial College London">
+  <title>Microstructure of option prices</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href=".//css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href=".//css/theme/white.css" id="theme">
+  <link rel="stylesheet" href="scrollable.css"/>
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? './/css/print/pdf.css' : './/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src=".//lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Microstructure of option prices</h1>
+  <p class="author">Douglas Vieira</p>
+  <p class="author">Imperial College London</p>
+  <p class="date">Vienna, 28 May 2018</p>
+</section>
+<section id="TOC">
+<ul>
+<li><a href="#/introduction">Introduction</a></li>
+<li><a href="#/market-microstructure-review">Market microstructure review</a></li>
+<li><a href="#/long-time-dynamics">Long time dynamics</a></li>
+<li><a href="#/small-time-dynamics">Small time dynamics</a></li>
+<li><a href="#/conclusion">Conclusion</a></li>
+</ul>
+</section>
+
+<section><section id="introduction" class="title-slide slide level1"><h1>Introduction</h1></section><section id="introduction-1" class="slide level2">
+<h2>Introduction</h2>
+<ul>
+<li>Status quo:
+<ul>
+<li>Sophisticated literature for options pricing</li>
+<li>Scarce literature on multiasset market microstructure models</li>
+</ul></li>
+<li>Options microstructure paradox
+<ul>
+<li>Options are expectations over (distant) future of underlying</li>
+<li>Microstructure modelling is short-sighted</li>
+<li>How to reconcile short time dynamics with long time ones?</li>
+</ul></li>
+</ul>
+</section></section>
+<section><section id="market-microstructure-review" class="title-slide slide level1"><h1>Market microstructure review</h1></section><section id="order-driven-markets" class="slide level2">
+<h2>Order-driven markets</h2>
+<ul>
+<li>Any market participant can submit
+<ul>
+<li><em>Limit orders</em> to propose buy or sell quotes</li>
+<li><em>Market orders</em> to trade against existing quotes</li>
+<li><em>Cancellations</em> to withdraw own unmatched limit orders</li>
+</ul></li>
+<li>Limit order book is the collection of outstanding limit orders</li>
+<li>On most exchanges, trade priority among limit orders is by price and time</li>
+</ul>
+</section><section id="section" class="slide level2" data-background-iframe="lob.html">
+<h2></h2>
+</section><section id="microstructure-noise" class="slide level2">
+<h2>Microstructure noise</h2>
+<ul>
+<li>The constraint of prices to the tick grid generates endogenous ‘microstructure effects’</li>
+<li>Time priority disencourages frequent changes in existing orders</li>
+<li>‘Microstructure effects’ viewed as ‘microstructure noise’
+<ul>
+<li>High-frequency financial econometrics <span class="citation" data-cites="ait2014high">(Aït-Sahalia and Jacod 2014)</span></li>
+<li>Model of uncertainty zones <span class="citation" data-cites="robert2011model">(Robert and Rosenbaum 2011)</span></li>
+</ul></li>
+</ul>
+</section></section>
+<section><section id="long-time-dynamics" class="title-slide slide level1"><h1>Long time dynamics</h1></section><section id="stylised-facts-in-daily-prices" class="slide level2">
+<h2>Stylised facts in daily prices</h2>
+<ul>
+<li>No autocorrelation on log returns</li>
+<li>Log returns are heavy tailed</li>
+<li>Volatility clustering</li>
+<li>Leverage effect</li>
+<li><span class="citation" data-cites="cont2001empirical">(see, e.g. Cont 2001)</span></li>
+</ul>
+</section><section id="sp-500-futures-example" class="slide level2">
+<h2>S&amp;P 500 futures example</h2>
+</section><section id="section-1" class="slide level2" data-background-iframe="sp500.html">
+<h2></h2>
+</section><section id="heston-model-example" class="slide level2">
+<h2>Heston model example</h2>
+<ul>
+<li>The price <span class="math inline">\(S\)</span> follows the SDE</li>
+</ul>
+<p><span class="math display">\[\begin{align}
+  dS_t      &amp; = \mu S_t dt + \sqrt{V_t} S_t dW_t \\
+  dV_t      &amp; = \kappa (\theta - V_t) dt + \nu \sqrt{V_t} dZ_t \\
+  d[W, Z]_t &amp; = \rho dt \end{align}\]</span></p>
+<ul>
+<li>Market state is the pair <span class="math inline">\((S, V)\)</span></li>
+</ul>
+</section><section id="section-2" class="slide level2" data-background-iframe="heston.html">
+<h2></h2>
+</section><section id="options-dynamics-representation" class="slide level2">
+<h2>Options dynamics representation</h2>
+<p><em>Theorem.</em> Assume the market state process <span class="math inline">\(X\)</span> is an Itô diffusion with locally Lipschitz coefficients, invertible diffusion coefficient matrix and with open connected support. Then, under no arbitrage, the option <span class="math inline">\(C\)</span> with square-integrable payoff <span class="math inline">\(f(X_T)\)</span> follows</p>
+<p><span class="math display">\[ C_t = \varphi(X_t), \quad dC_t = \nabla_x\varphi(X_t)dX_t, \]</span></p>
+<p><span class="math display">\[ \text{where } \varphi(x) = \mathbb E^{\mathbb Q}[f(X_T)\mid X_t=x]. \]</span></p>
+</section><section id="some-encompassed-vanilla-models" class="slide level2">
+<h2>Some encompassed vanilla models</h2>
+<ul>
+<li>Heston model
+<ul>
+<li>With Feller condition <span class="math inline">\(\nu^2 &lt; 2\kappa\theta\)</span></li>
+</ul></li>
+<li>SABR model
+<ul>
+<li>With <span class="math inline">\(\beta = 1\)</span> (lognormal SABR), or</li>
+<li>Free-boundary <span class="citation" data-cites="antonov2015free">(<span class="math inline">\(\beta &lt; 1/2\)</span>, see Antonov, Konikov, and Spector 2015)</span></li>
+</ul></li>
+<li>Bergomi model
+<ul>
+<li>No restrictions</li>
+</ul></li>
+</ul>
+</section></section>
+<section><section id="small-time-dynamics" class="title-slide slide level1"><h1>Small time dynamics</h1></section><section id="approach" class="slide level2">
+<h2>Approach</h2>
+<ol>
+<li>Start with macroscopic dynamics</li>
+<li>Find local behaviour via asymptotics</li>
+<li>Add microstructure effects</li>
+<li>Observe implications to macroscopic dynamics</li>
+</ol>
+</section><section id="small-time-asymptotics-of-global-dynamics" class="slide level2">
+<h2>Small time asymptotics of global dynamics</h2>
+<p><em>Theorem</em> Let <span class="math inline">\(X\)</span> be an Itô diffusion, of the form</p>
+<p><span class="math display">\[ dX_t = \mu_t dt + \sigma_t dW_t, \]</span></p>
+<p><span class="math display">\[ \text{then } \frac{X_t - \tilde X_t}{\sqrt t} \xrightarrow{L^2} 0, \]</span></p>
+<p><span class="math display">\[ \text{where } d\tilde X_t = \sigma_0 dW_t. \]</span></p>
+</section><section id="consequences-for-option-price-dynamics" class="slide level2">
+<h2>Consequences for option price dynamics</h2>
+<ul>
+<li>Local dynamics of options</li>
+</ul>
+<p><span class="math display">\[ d\tilde C_t = \nabla_x\varphi(X_0) d\tilde X_t \]</span></p>
+<ul>
+<li>Options still depend on volatility
+<ul>
+<li>Despite underlying price losing stochastic volatility effects</li>
+<li>Volatility becomes an artefact of long time dependency</li>
+</ul></li>
+</ul>
+</section><section id="stylised-microstructure-effects" class="slide level2">
+<h2>Stylised microstructure effects</h2>
+<ul>
+<li>Discreteness of prices</li>
+<li>Negative autocorrelation on tick price changes (bouncing effect)</li>
+<li>Asynchronous price changes</li>
+<li>see, e.g. <span class="citation" data-cites="cont2001empirical">(Cont 2001)</span></li>
+</ul>
+</section><section id="round-prices-to-nearest-tick" class="slide level2">
+<h2>Round prices to nearest tick</h2>
+<ul>
+<li>Features all three stylised facts</li>
+<li>see <span class="citation" data-cites="rosenbaum2009integrated">(Rosenbaum 2009)</span></li>
+</ul>
+</section><section id="rounded-heston-model-example" class="slide level2">
+<h2>Rounded Heston model example</h2>
+</section><section id="section-3" class="slide level2" data-background-iframe="rounded_heston.html">
+<h2></h2>
+</section></section>
+<section><section id="conclusion" class="title-slide slide level1"><h1>Conclusion</h1></section><section id="conclusion-1" class="slide level2">
+<h2>Conclusion</h2>
+<ul>
+<li>Stochastic volatility models behave locally as multidimensional Brownian motions</li>
+<li>Microstructure effects can be replicated by perturbing the ‘fundamental’ price dynamics</li>
+<li>Options microstructure paradox solution:
+<ul>
+<li>Long time dependency manifests locally as dependency to volatility process</li>
+<li>Microstructure effects disappear at long horizons</li>
+</ul></li>
+</ul>
+</section><section id="references" class="slide level2 unnumbered scrollable">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-ait2014high">
+<p>Aït-Sahalia, Yacine, and Jean Jacod. 2014. <em>High-Frequency Financial Econometrics</em>. Princeton University Press.</p>
+</div>
+<div id="ref-antonov2015free">
+<p>Antonov, Alexandre, Michael Konikov, and Michael Spector. 2015. “The Free Boundary Sabr: Natural Extension to Negative Rates.” <em>Preprint, SSRN//2557046</em>.</p>
+</div>
+<div id="ref-cont2001empirical">
+<p>Cont, Rama. 2001. “Empirical Properties of Asset Returns: Stylized Facts and Statistical Issues.” <em>Quantitative Finance</em> 1 (2):223–36.</p>
+</div>
+<div id="ref-robert2011model">
+<p>Robert, Christian Y., and Mathieu Rosenbaum. 2011. “The Model with Uncertainty Zones for Ultra High Frequency Prices and Durations: Applications to Statistical Estimation and Mathematical Finance.” In <em>Econophysics of Order-Driven Markets</em>, 203–24. New Econ. Windows. Springer, Milan. <a href="https://doi.org/10.1007/978-88-470-1766-5_14" class="uri">https://doi.org/10.1007/978-88-470-1766-5_14</a>.</p>
+</div>
+<div id="ref-rosenbaum2009integrated">
+<p>Rosenbaum, Mathieu. 2009. “Integrated Volatility and Round-Off Error.” <em>Bernoulli</em> 15 (3):687–720. <a href="https://doi.org/10.3150/08-BEJ170" class="uri">https://doi.org/10.3150/08-BEJ170</a>.</p>
+</div>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script src=".//lib/js/head.min.js"></script>
+  <script src=".//js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: './/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: './/plugin/zoom-js/zoom.js', async: true },
+          { src: './/plugin/math/math.js', async: true },
+          { src: './/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>
