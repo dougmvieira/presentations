@@ -1,5 +1,13 @@
 # My reveal.js presentations hosted at GitHub Pages
 
+## 16 July 2019 - Imperial College London - Late Stage Review
+
+- Presentation
+https://dougmvieira.github.io/presentations/20190716-LSR.html
+
+- Source code
+https://github.com/dougmvieira/20190716-LSR/
+
 ## 26 February 2019 - The Thalesians (London) - Options market making and stochastic volatility
 
 - Presentation

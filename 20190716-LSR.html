@@ -54,27 +54,7 @@
 </ul>
 </section>
 
-<section><section id="introduction" class="title-slide slide level1"><h1>Introduction</h1></section><section id="outline" class="slide level2">
-<h2>Outline</h2>
-<ul>
-<li>Options market making model I
-<ul>
-<li>Incorporate option price dynamics in a market making framework</li>
-</ul></li>
-<li>Options market microstructure
-<ul>
-<li>Linearity of option prices in small time scales</li>
-<li>Role of stochastic volatility</li>
-<li>Structure of trade activity</li>
-</ul></li>
-<li>Options market making model II
-<ul>
-<li>Future research</li>
-<li>Aiming at closed-form solutions without heuristic approximations</li>
-<li>Incorporate trade activity structure in a market making framework</li>
-</ul></li>
-</ul>
-</section><section id="motivation" class="slide level2">
+<section><section id="introduction" class="title-slide slide level1"><h1>Introduction</h1></section><section id="motivation" class="slide level2">
 <h2>Motivation</h2>
 <ul>
 <li>Gap in the literature
@@ -93,19 +73,21 @@
 <li>Find local behaviour via small time asymptotics</li>
 <li>Incorporate local dynamics to market making model</li>
 </ol>
+</section><section id="option-representation" class="slide level2">
+<h2>Option representation</h2>
+<p><em>Lemma</em> Let the market state process <span class="math inline">\((X_t)_{t\in[0,T]}\)</span> be a continuous semimartingale. Assume the existence of an ELMM <span class="math inline">\(\mathbb Q\)</span> where <span class="math inline">\((X_t)_{t\in[0,T]}\)</span> is a Markov process. Then, a no-arbitrage price process <span class="math inline">\((C_t)_{t\in[0,T]}\)</span> of an <span class="math inline">\(\mathcal F_T\)</span>-measurable claim <span class="math inline">\(f(X_T) \geq 0\)</span> is given by <span class="math display">\[  C_t = \varphi(t, X_t), \quad
+    \varphi(t, x) = \mathbb E^{\mathbb Q}[f(X_{T - t}) \mid X_0 = x]. \]</span></p>
+<p>If <span class="math inline">\(\varphi\)</span> is of class <span class="math inline">\(\mathcal C^{1, 2}(U)\)</span>, then <span class="math display">\[  dC_t = \nabla_x\varphi(t, X_t)dX_t, \quad \forall t \in [0, T). \]</span></p>
 </section><section id="small-time-asymptotics" class="slide level2">
 <h2>Small time asymptotics</h2>
 <p><em>Theorem</em> Let <span class="math inline">\(X\)</span> be an Itô diffusion, of the form</p>
 <p><span class="math display">\[ dX_t = \mu_t dt + \sigma_t dW_t, \]</span></p>
 <p><span class="math display">\[ \text{then } \frac{X_t - \tilde X_t}{\sqrt t} \xrightarrow{L^2} 0, \text{ as } t\to 0,\]</span></p>
 <p><span class="math display">\[ \text{where } d\tilde X_t = \sigma_0 dW_t. \]</span></p>
+</section><section id="heston-model-simulation" class="slide level2">
+<h2>Heston model simulation</h2>
 </section><section id="section" class="slide level2" data-background-iframe="20180528/heston.html">
 <h2></h2>
-</section><section id="option-representation" class="slide level2">
-<h2>Option representation</h2>
-<p><em>Theorem.</em> Assume the market state process <span class="math inline">\(X\)</span> is an Itô diffusion with locally Lipschitz coefficients, invertible diffusion coefficient matrix and with open connected support. Then, under no arbitrage, the option <span class="math inline">\(C\)</span> with square-integrable payoff <span class="math inline">\(f(X_T)\)</span> follows</p>
-<p><span class="math display">\[ C_t = \varphi(X_t), \quad dC_t = \nabla_x\varphi(X_t)dX_t, \]</span></p>
-<p><span class="math display">\[ \text{where } \varphi(x) = \mathbb E^{\mathbb Q}[f(X_T)\mid X_t=x]. \]</span></p>
 </section><section id="role-of-stochastic-volatility" class="slide level2">
 <h2>Role of stochastic volatility</h2>
 <ul>
@@ -126,15 +108,11 @@
 </section><section id="market-making-framework" class="slide level2">
 <h2>Market making framework</h2>
 <ul>
-<li><p>Following <span class="citation" data-cites="gueant2017optimal">(Guéant 2017)</span></p></li>
-<li><p>Bid and ask quotes <span class="math inline">\(S^\mathrm{ask}_t\)</span> and <span class="math inline">\(S^\mathrm{bid}_t\)</span> are posted around a reference price</p></li>
+<li>Following <span class="citation" data-cites="gueant2017optimal">(Guéant 2017)</span></li>
+<li><p>Bid and ask quotes <span class="math inline">\(S^\mathrm{ask}_t\)</span> and <span class="math inline">\(S^\mathrm{bid}_t\)</span> are posted around a reference price <span class="math display">\[ dS_t^i = \sigma^i dW_t^i, \quad d[W^i, W^j]_t = \rho^{ij}dt \]</span></p></li>
+<li><p>Trades at bid and ask prices are point processes with arrival rates <span class="math display">\[ \Lambda^{i, \mathrm{ask}}_t = \Lambda^i(S^{i, \mathrm{ask}}_t - S_t^i), \quad
+ \Lambda^{i, \mathrm{bid}}_t = \Lambda^i(S^{i, \mathrm{bid}}_t - S_t^i) \]</span> <span class="math display">\[ \Lambda^i(\delta) = A^ie^{-k^i\delta} \]</span></p></li>
 </ul>
-<p><span class="math display">\[ dS_t^i = \sigma^i dW_t^i, \quad d[W^i, W^j]_t = \rho^{ij}dt \]</span></p>
-<ul>
-<li>Trades at bid and ask prices are point processes with arrival rates</li>
-</ul>
-<p><span class="math display">\[ \Lambda^{i, \mathrm{ask}}_t = \Lambda^i(S^{i, \mathrm{ask}}_t - S_t^i), \quad
-   \Lambda^{i, \mathrm{bid}}_t = \Lambda^i(S^{i, \mathrm{bid}}_t - S_t^i) \]</span> <span class="math display">\[ \Lambda^i(\delta) = A^ie^{-k^i\delta} \]</span></p>
 </section><section id="section-1" class="slide level2" data-background-iframe="20190226/skew_plot.html">
 <h2></h2>
 </section><section id="section-2" class="slide level2" data-background-iframe="20190226/spread_plot.html">
@@ -142,53 +120,20 @@
 </section><section id="optimisation-problem" class="slide level2">
 <h2>Optimisation problem</h2>
 <ul>
-<li><p>Market maker optimises CARA utility on terminal wealth with risk aversion parameter <span class="math inline">\(\gamma\)</span> and liquidity penalty <span class="math inline">\(\ell\)</span></p></li>
-<li><p>The HJB equation is transformed to the system of ODEs <small> <span class="math display">\[ \begin{align}
+<li>Market maker optimises CARA utility on terminal wealth with risk aversion parameter <span class="math inline">\(\gamma\)</span> and liquidity penalty <span class="math inline">\(\ell\)</span></li>
+<li>The HJB equation is transformed to the system of ODEs <small> <span class="math display">\[ \begin{align}
 \partial_t \theta(t, q) = &amp; \frac{1}{2} \gamma \sum_{i=1}^d\sum_{j=1}^d \rho^{i,j} \sigma^i\sigma^j q^i q^j
 - \sum_{i=1}^d 1_{q^i&lt;Q^i}\frac{A^i C_\gamma^i}{k} \exp\left(-k^i\left(\theta\left(t, q\right) - \theta\left(t, q + e^i\right)\right)\right) \\
 &amp; - \sum_{i=1}^d  1_{q^i&gt;-Q^i}\frac{A^i C_\gamma^i}{k} \exp\left(-k^i\left(\theta\left(t, q\right) - \theta\left(t, q - e^i\right)\right)\right), \\
 \theta(T, q) = &amp; -\ell(q).
-\end{align} \]</span> </small></p></li>
+\end{align} \]</span> </small></li>
 </ul>
-</section><section id="approximate-solution" class="slide level2">
-<h2>Approximate solution</h2>
-<ul>
-<li><p>Approximation for <span class="math inline">\(T \to \infty\)</span> and by 2nd order Taylor expansion on the difference term</p></li>
-<li><p>Optimal spread is constant <span class="math display">\[ S^{i,\mathrm{ask}}_t - S^{i,\mathrm{bid}}_t = \frac{2}{\gamma}
-\log\left(1+\frac{\gamma}{k^{i}}\right)
-+ \sqrt{\frac{\gamma}{2}}\Gamma^{ii} \]</span></p></li>
-<li><p>Optimal skew is linear <span class="math display">\[ \frac{S^{i,\mathrm{ask}}_t + S^{i,\mathrm{bid}}_t}{2} - S^i_t
-= -\sqrt{\frac{\gamma}{2}}\Gamma^{i\bullet} q_{t-}, \]</span></p></li>
-</ul>
-</section><section id="section-3" class="slide level2">
-<h2></h2>
-<p>where <span class="math display">\[ \Gamma = D^{-\frac 1 2}(D^{1/2}\Sigma D^{1/2})^{1/2} D^{-\frac 1 2} \]</span> <span class="math display">\[ D = \text{diag}(A^1 C_\gamma^1 k^1,
-           \ldots, A^d C_\gamma^d k^d), \]</span> <span class="math display">\[ C_\gamma^i = \left(1+\frac{\gamma}{k^{i}}
-    \right)^{-\left(1+\frac{k^{i}}{\gamma}\right)} \]</span></p>
-</section><section id="section-4" class="slide level2" data-background-iframe="20190716/optimal_quotes.html">
+</section><section id="options-market-making-model-i-simulation" class="slide level2">
+<h2>Options market making model I simulation</h2>
+</section><section id="section-3" class="slide level2" data-background-iframe="20190716/optimal_quotes.html">
 <h2></h2>
 </section></section>
-<section><section id="options-market-microstructure" class="title-slide slide level1"><h1>Options market microstructure</h1></section><section id="market-microstructure-effects" class="slide level2">
-<h2>Market microstructure effects</h2>
-<ul>
-<li>Fundamental price vs microstructure price
-<ul>
-<li>Market maker needs to filter microstructure effects</li>
-</ul></li>
-<li>Options are unevenly affected by microstructure effects</li>
-</ul>
-</section><section id="intraday-volatility" class="slide level2">
-<h2>Intraday volatility</h2>
-<ul>
-<li>Stochastic volatility is obtained by inverting the Heston formula</li>
-<li>Consistent with at-the-money volatility</li>
-<li>Stochastic volatility is rough</li>
-</ul>
-</section><section id="section-5" class="slide level2" data-background-image="20190716/vols.png" data-background-size="contain">
-<h2></h2>
-</section><section id="section-6" class="slide level2" data-background-image="20190716/variogram.png" data-background-size="contain">
-<h2></h2>
-</section><section id="linear-model-for-options" class="slide level2">
+<section><section id="options-market-microstructure" class="title-slide slide level1"><h1>Options market microstructure</h1></section><section id="linear-model-for-options" class="slide level2">
 <h2>Linear model for options</h2>
 <ul>
 <li>Approach
@@ -212,9 +157,13 @@
 <li>Compare with <span class="citation" data-cites="abergel2012drives">(Abergel and Zaatour 2012)</span></li>
 </ul></li>
 </ul>
-</section><section id="section-7" class="slide level2" data-background-image="20190716/compare_deltas_call.png" data-background-size="contain">
+</section><section id="heston-vs-empirical-delta-for-call-options" class="slide level2">
+<h2>Heston vs Empirical Delta for call options</h2>
+</section><section id="section-4" class="slide level2" data-background-image="20190716/compare_deltas_call.png" data-background-size="contain">
 <h2></h2>
-</section><section id="section-8" class="slide level2" data-background-image="20190716/compare_vegas_call.png" data-background-size="contain">
+</section><section id="heston-vs-empirical-vega-for-call-options" class="slide level2">
+<h2>Heston vs Empirical Vega for call options</h2>
+</section><section id="section-5" class="slide level2" data-background-image="20190716/compare_vegas_call.png" data-background-size="contain">
 <h2></h2>
 </section><section id="trading-activity-structure" class="slide level2">
 <h2>Trading activity structure</h2>
@@ -223,45 +172,25 @@
 <li>Minor drivers are strike/expiry grid density and age of the option issue</li>
 <li>Moneyness is stochastic</li>
 </ul>
-</section><section id="section-9" class="slide level2" data-background-image="20190716/trade_activity.png" data-background-size="contain">
+</section><section id="section-6" class="slide level2" data-background-image="20190716/trade_activity.png" data-background-size="contain">
 <h2></h2>
 </section></section>
-<section><section id="options-market-making-model-ii" class="title-slide slide level1"><h1>Options market making model II</h1></section><section id="ideas-for-tractability" class="slide level2">
-<h2>Ideas for tractability</h2>
+<section><section id="options-market-making-model-ii" class="title-slide slide level1"><h1>Options market making model II</h1></section><section id="ideas" class="slide level2">
+<h2>Ideas</h2>
 <ul>
-<li>Heavy-traffic approximation on wealth process
+<li>Tractability
 <ul>
-<li>Allows Hawkes-like processes for order flow</li>
-<li>Optimal quotes reinterpreted as average targets</li>
-<li>High dimensionality implies better approximation</li>
+<li>Heavy-traffic approximation on wealth process</li>
+<li>Time-homogeneous solutions</li>
 </ul></li>
-<li>Time-homogeneous solutions
+<li>Liquidity structure
 <ul>
-<li>Market maker horizon at infinity</li>
-<li>E.g. ergodic control for <span class="citation" data-cites="cjp15">(Cartea, Jaimungal, and Penalva 2015)</span>-type of functional <span class="math display">\[ \lim_{T\to\infty} \frac{1}{T}\mathbb E \left[ \int_0^T\left(dV_t - \gamma d[V]_t\right) \right] \]</span></li>
+<li>Trading activity as function of moneyness and expiry</li>
+<li>Factor-based market making (continuum of options)</li>
 </ul></li>
-</ul>
-</section><section id="other-ideas" class="slide level2">
-<h2>Other ideas</h2>
+<li>Extension
 <ul>
-<li>Couple trading activity between options
-<ul>
-<li>Trading activity depends on option position on the vol surface</li>
-<li>Allow order flow to depend on underlying asset price</li>
-</ul></li>
-<li>Factor-based market making
-<ul>
-<li>Both price and trade activity dynamics explained by factors</li>
-<li>Optimal quotes as a function of strike and expiry</li>
-</ul></li>
-</ul>
-</section><section id="extension" class="slide level2">
-<h2>Extension</h2>
-<ul>
-<li>Incorporating views
-<ul>
-<li>Views as in <span class="citation" data-cites="black1992global">(Black and Litterman 1992)</span> and <span class="citation" data-cites="davis2013black">(Davis and Lleo 2013)</span></li>
-<li>Allows for views on linear combination of options</li>
+<li>Views as in <span class="citation" data-cites="black1992global">(Black and Litterman 1992)</span></li>
 </ul></li>
 </ul>
 </section><section id="thank-you" class="slide level2">
@@ -278,12 +207,6 @@
 </div>
 <div id="ref-black1992global">
 <p>Black, Fischer, and Robert Litterman. 1992. “Global Portfolio Optimization.” <em>Financial Analysts Journal</em> 48 (5). Taylor &amp; Francis: 28–43.</p>
-</div>
-<div id="ref-cjp15">
-<p>Cartea, Álvaro, Sebastian Jaimungal, and José Penalva. 2015. <em>Algorithmic and High-Frequency Trading</em>. Cambridge University Press.</p>
-</div>
-<div id="ref-davis2013black">
-<p>Davis, Mark, and Sébastien Lleo. 2013. “Black–Litterman in Continuous Time: The Case for Filtering.” <em>Quantitative Finance Letters</em> 1 (1). Taylor &amp; Francis: 30–35.</p>
 </div>
 <div id="ref-el2015stochastic">
 <p>El Aoud, Sofiene, and Frédéric Abergel. 2015. “A Stochastic Control Approach to Option Market Making.” <em>Market Microstructure and Liquidity</em> 1 (01). World Scientific: 1550006.</p>
