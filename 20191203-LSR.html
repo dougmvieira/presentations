@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content=" Late stage review">
+  <meta name="author" content="Douglas Vieira">
+  <meta name="author" content="Imperial College London">
+  <meta name="author" content="Supervisors: Prof Rama Cont and Dr Mikko Pakkanen">
+  <meta name="dcterms.date" content="2019-12-03">
+  <title> Options market making and other topics in algo trading</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="./css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="./css/theme/white.css" id="theme">
+  <link rel="stylesheet" href="scrollable.css"/>
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? './css/print/pdf.css' : './css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="./lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title"><small> Options market making and other topics in algo trading </small></h1>
+  <p class="author"><b> Late stage review </b></p>
+  <p class="author">Douglas Vieira</p>
+  <p class="author">Imperial College London</p>
+  <p class="author">Supervisors: Prof Rama Cont and Dr Mikko Pakkanen</p>
+  <p class="date">3 December 2019</p>
+</section>
+<section id="TOC">
+<ul>
+<li><a href="#/high-frequency-options-market-making">High-frequency options market making</a></li>
+<li><a href="#/other-topics-in-algorithmic-trading">Other topics in algorithmic trading</a></li>
+<li><a href="#/plan-for-remaining-of-phd">Plan for remaining of PhD</a></li>
+</ul>
+</section>
+
+<section><section id="high-frequency-options-market-making" class="title-slide slide level1"><h1>High-frequency options market making</h1></section><section id="options-small-time-dynamics" class="slide level2">
+<h2>Options small time dynamics</h2>
+<p>For a nice stochastic volatility model</p>
+<p><span class="math display">\[ \begin{align}
+dS_t &amp; = \mu_t dt + \sigma(V_t) dW^1_t, \\
+dV_t &amp; = \alpha_t dt + \nu(V_t) dW^2_t, \\
+\end{align} \]</span></p>
+<p>a European-type option follows the small time dynamics</p>
+<p><span class="math display">\[ \begin{align}
+d\tilde S_t &amp; = \sigma(V_0) dW^1_t, \quad
+d\tilde V_t   = \nu(V_0) dW^2_t, \\
+d\tilde C_t &amp; = \Delta_0 d\tilde S_t + \mathcal V_0 d\tilde V_t \\
+\end{align} \]</span></p>
+</section><section id="volatility-drives-high-frequency-option-prices" class="slide level2">
+<h2>Volatility drives high-frequency option prices</h2>
+<ol>
+<li>Small time suggests linear regression in high-frequency data</li>
+<li>Microstructure effects do not bias the estimates</li>
+<li>We successfully recover the Greek vega from the regression</li>
+</ol>
+</section><section id="section" class="slide level2" data-background-image="20191203/compare_vegas_call.png" data-background-size="contain">
+<h2></h2>
+</section><section id="options-market-making-model" class="slide level2">
+<h2>Options market making model</h2>
+<ol>
+<li>Price dynamics <span class="math display">\[ dC_{t, p} = \Delta_{t, p} \cdot dS_t, \quad
+dS_t = \mu_t dt + \sigma_t dW_t, \]</span></li>
+<li>Trade dynamics (<span class="math inline">\(n^\mathrm{ask}\)</span> and <span class="math inline">\(n^\mathrm{bid}\)</span> intensities) <span class="math display">\[ \lambda_t^\mathrm{bid}(dp) = e^{-\kappa_{t, p} \delta_{t, p}^\mathrm{bid}} A_t(dp), \quad
+\lambda_t^\mathrm{ask}(dp) = e^{-\kappa_{t, p} \delta_{t, p}^\mathrm{ask}} A_t(dp). \]</span></li>
+<li>Inventory and cash <span class="math display">\[ q_t(dp) = \int_0^t n^\mathrm{bid}(ds \times dp) - \int_0^t n^\mathrm{ask}(ds \times dp), \]</span> <span class="math display">\[ dX_t = \int_{\mathcal P} C^\mathcal{ask}_{t, p} n^\mathrm{ask}(dt \times dp) - \int_{\mathcal P} C^\mathcal{bid}_{t, p} n^\mathrm{bid}(dt \times dp). \]</span></li>
+</ol>
+</section><section id="options-market-making-model-cont." class="slide level2">
+<h2>Options market making model (cont.)</h2>
+<ol>
+<li><p>Wealth process <span class="math display">\[ Y_t = X_t + \int_{\mathcal P} C_{t, p} q_t(dp) \]</span></p></li>
+<li><p>Maximisation criterion <span class="math display">\[ \mathbb E \left[ Y_T - \frac{1}{2} \gamma \int_{(0, T] \times \mathcal P^2} q_{t-}(dp)q_{t-}(dq)d[C_p, C_q]_t \right] \]</span></p></li>
+</ol>
+</section><section id="options-market-making-model-solution" class="slide level2">
+<h2>Options market making model solution</h2>
+<p><span class="math display">\[ \begin{align} \frac{ C^\mathrm{bid}_{t, p} + C^\mathrm{ask}_{t, p}}{2} = 
+   &amp; \mathbb E \left[ C_{T, p} \mid \mathcal F_t \right]
+   - \gamma (T - t) \Delta_{t, p} \cdot \sigma_t \sigma_t^\top g_t \\
+   &amp; + o(T - t) + O(\gamma^2), \quad 
+     g_t = \int_{\mathcal P} \Delta_{s, p} q_t(dp) \\
+\frac{ C^\mathrm{ask}_{t, p} - C^\mathrm{bid}_{t, p}}{2} = 
+  &amp; \frac{1}{\kappa_{t, p}}
+  + \frac{1}{2} \gamma (T - t) \Delta_{t, p} \cdot \sigma_t \sigma_t^\top
+    \Delta_{t, p} \\ &amp; + o(T - t) + O(\gamma^2). \end{align} \]</span></p>
+</section><section id="structure-of-options-spreads" class="slide level2">
+<h2>Structure of options spreads</h2>
+<ol>
+<li>Spread does not depend on base trade activity</li>
+<li>Assume <span class="math inline">\(\kappa_{t, p}\)</span> is constant in moneyness</li>
+<li>Linear regression gives us <span class="math inline">\(\kappa\)</span> and <span class="math inline">\(\gamma\)</span></li>
+</ol>
+</section><section id="section-1" class="slide level2" data-background-image="20191203/optimal_spread_rel.png" data-background-size="contain">
+<h2></h2>
+</section><section id="trade-activity-versus-spreads" class="slide level2">
+<h2>Trade activity versus spreads</h2>
+</section><section id="section-2" class="slide level2" data-background-image="20191203/spread.png" data-background-size="contain">
+<h2></h2>
+</section><section id="section-3" class="slide level2" data-background-image="20191203/trade_activity.png" data-background-size="contain">
+<h2></h2>
+</section></section>
+<section><section id="other-topics-in-algorithmic-trading" class="title-slide slide level1"><h1>Other topics in algorithmic trading</h1></section><section id="compact-formulas-for-multi-asset-market-making" class="slide level2">
+<h2>Compact formulas for multi-asset market making</h2>
+<ol>
+<li>Builds upon <span class="citation" data-cites="gueant2013dealing">(Guéant, Lehalle, and Fernandez-Tapia 2013)</span> and <span class="citation" data-cites="gueant2017optimal">(Guéant 2017)</span></li>
+<li>Formulas are heuristic approximations for large horizon</li>
+<li>Previous approaches do not generalise for the multi-asset case</li>
+</ol>
+</section><section id="section-4" class="slide level2" data-background-image="20191203/optimal_bid_approx_pos.png" data-background-size="contain">
+<h2></h2>
+</section><section id="section-5" class="slide level2" data-background-image="20191203/optimal_bid_in_time_pos.png" data-background-size="contain">
+<h2></h2>
+</section><section id="optimal-execution-with-latency" class="slide level2">
+<h2>Optimal execution with latency</h2>
+<ol>
+<li>Adapts <span class="citation" data-cites="almgren2001optimal">(Almgren and Chriss 2001)</span> for latency</li>
+<li>Two notions of latency: decision and execution</li>
+<li>Latency induces an impulse control problem</li>
+</ol>
+</section><section id="section-6" class="slide level2" data-background-image="20191203/inventory_example.png" data-background-size="contain">
+<h2></h2>
+</section></section>
+<section><section id="plan-for-remaining-of-phd" class="title-slide slide level1"><h1>Plan for remaining of PhD</h1></section><section id="plan-for-remaining-of-phd-1" class="slide level2">
+<h2>Plan for remaining of PhD</h2>
+<ol>
+<li>Focus in polishing and extending existing results</li>
+<li>Special attention needed for:
+<ol>
+<li>options market making model</li>
+<li>empirical research on option spreads</li>
+</ol></li>
+<li>Thesis estimated to be done by July 2020</li>
+<li>The current thesis draft contains 189 pages</li>
+</ol>
+</section><section id="collaboration-with-cfm" class="slide level2">
+<h2>Collaboration with CFM</h2>
+<ol>
+<li>CFM agreed to collaborate with Eurostoxx options tick data</li>
+<li>More data enables:
+<ol>
+<li>Better estimates for Greek vega</li>
+<li>Better estimates for conditional arrival rates</li>
+<li>Analysis of structure of option spreads in time-to-expiry</li>
+</ol></li>
+<li>Most of the code is already written</li>
+</ol>
+</section><section id="references" class="slide level2 unnumbered scrollable">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-almgren2001optimal">
+<p>Almgren, Robert, and Neil Chriss. 2001. “Optimal Execution of Portfolio Transactions.” <em>Journal of Risk</em> 3: 5–40.</p>
+</div>
+<div id="ref-gueant2013dealing">
+<p>Guéant, O., C.-A. Lehalle, and J. Fernandez-Tapia. 2013. “Dealing with Inventory Risk. A Solution to the Market Making Problem.” <em>Mathematics and Financial Economics</em> 7 (4): 477–507.</p>
+</div>
+<div id="ref-gueant2017optimal">
+<p>Guéant, Olivier. 2017. “Optimal Market Making.” <em>Applied Mathematical Finance</em> 24 (2). Routledge: 112–54. <a href="https://doi.org/10.1080/1350486X.2017.1342552" class="uri">https://doi.org/10.1080/1350486X.2017.1342552</a>.</p>
+</div>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script src="./lib/js/head.min.js"></script>
+  <script src="./js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: './lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: './plugin/zoom-js/zoom.js', async: true },
+          { src: './plugin/math/math.js', async: true },
+          { src: './plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>
