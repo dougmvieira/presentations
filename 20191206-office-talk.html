@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content=" Office talk">
+  <meta name="author" content="Douglas Vieira">
+  <meta name="author" content="Imperial College London">
+  <meta name="author" content="Supervisors: Prof Rama Cont and Dr Mikko Pakkanen">
+  <meta name="dcterms.date" content="2019-12-06">
+  <title> High-frequency options market making</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="./css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="./css/theme/white.css" id="theme">
+  <link rel="stylesheet" href="scrollable.css"/>
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? './css/print/pdf.css' : './css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="./lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title"><small> High-frequency options market making </small></h1>
+  <p class="author"><b> Office talk </b></p>
+  <p class="author">Douglas Vieira</p>
+  <p class="author">Imperial College London</p>
+  <p class="author">Supervisors: Prof Rama Cont and Dr Mikko Pakkanen</p>
+  <p class="date">6 December 2019</p>
+</section>
+<section id="TOC">
+<ul>
+<li><a href="#/introduction">Introduction</a></li>
+<li><a href="#/optimal-market-making-review">Optimal market making review</a></li>
+<li><a href="#/stochastic-volatility">Stochastic volatility</a></li>
+<li><a href="#/high-frequency-options-market-making">High-frequency options market making</a></li>
+<li><a href="#/conclusion">Conclusion</a></li>
+</ul>
+</section>
+
+<section><section id="introduction" class="title-slide slide level1"><h1>Introduction</h1></section><section id="motivation" class="slide level2">
+<h2>Motivation</h2>
+<ul>
+<li>Gap in the literature. Known papers in options market making:
+<ol>
+<li><span class="citation" data-cites="stoikov2009option">(Stoikov and Sağlam 2009)</span>,</li>
+<li><span class="citation" data-cites="el2015stochastic">(El Aoud and Abergel 2015)</span>,</li>
+<li><span class="citation" data-cites="baldacci2019algorithmic">(Baldacci, Bergault, and Guéant 2019)</span>.</li>
+</ol></li>
+<li>Focus on high-frequency regime for tractability</li>
+</ul>
+</section></section>
+<section><section id="optimal-market-making-review" class="title-slide slide level1"><h1>Optimal market making review</h1></section><section id="overview" class="slide level2">
+<h2>Overview</h2>
+<ul>
+<li>Bid and ask quotes <span class="math inline">\(S^\mathrm{ask}_t\)</span> and <span class="math inline">\(S^\mathrm{bid}_t\)</span> are posted around a reference price</li>
+</ul>
+<p><span class="math display">\[ dS_t = \mu dt + \sigma dW_t \]</span></p>
+<ul>
+<li>Trades at bid and ask prices are point processes <span class="math inline">\(N^\mathrm{bid}\)</span>, <span class="math inline">\(N^\mathrm{ask}\)</span> with arrival rates</li>
+</ul>
+<p><span class="math display">\[ \Lambda^\mathrm{bid}_t = \Lambda(S^\mathrm{ask}_t - S_t), \quad
+   \Lambda^\mathrm{ask}_t = \Lambda(S^\mathrm{bid}_t - S_t) \]</span> <span class="math display">\[ \Lambda(\delta) = Ae^{-k\delta} \]</span></p>
+</section><section id="optimisation-problem" class="slide level2">
+<h2>Optimisation problem</h2>
+<ul>
+<li><p>Inventory and cash <span class="math display">\[ \begin{align}
+dq_t &amp; = dN^\mathrm{bid}_t - dN^\mathrm{ask}_t, \\
+dX_t &amp; = S^\mathcal{ask}_t dN^\mathrm{ask}_t - S^\mathcal{bid}_t dN^\mathrm{bid}_t.
+\end{align} \]</span></p></li>
+<li><p>Market maker optimises CARA utility on terminal wealth with risk aversion parameter <span class="math inline">\(\gamma\)</span> <span class="math display">\[ \mathbb E\left[ Y_T - \frac{1}{2} \gamma \int_0^T q_{t-}^2 d[S]_t \right], \quad
+ Y_t = X_t + q_t S_t \]</span></p></li>
+</ul>
+</section><section id="section" class="slide level2" data-background-iframe="20190226/skew_plot.html">
+<h2></h2>
+</section><section id="section-1" class="slide level2" data-background-iframe="20190226/spread_plot.html">
+<h2></h2>
+</section><section id="hjb-equation" class="slide level2">
+<h2>HJB equation</h2>
+<p>Optimal controls satisfy</p>
+<p><small> <span class="math display">\[ \begin{align*}
+\delta^\mathrm{bid}(t, q, z) &amp;
+= \frac{1}{\kappa} - u(t, q + 1, z) + u(t, q, z), \\
+\delta^\mathrm{ask}(t, q, z)
+&amp; = \frac{1}{\kappa} - u(t, q - 1, z) + u(t, q, z).
+\end{align*} \]</span> </small></p>
+<p>where the value function satisfies the PIDE</p>
+<p><small> <span class="math display">\[ \begin{align}
+( \partial_t + \mathcal L^S ) u + \mu q
+&amp; + \frac{A}{e \kappa} e^{ \kappa \left( u(t, q + 1, S) - u(t, q, S) \right) } \\
+&amp; + \frac{A}{e \kappa} e^{ \kappa \left( u(t, q - 1, S) - u(t, q, S) \right) }
+= \frac{1}{2} \gamma \sigma^2 q^2, \\ 
+&amp; u(T, q, z) = 0
+\end{align} \]</span> </small></p>
+</section><section id="solutions" class="slide level2">
+<h2>Solutions</h2>
+<ul>
+<li>Formula for exact solution available only in the single-asset case</li>
+<li>For the multi-asset,
+<ul>
+<li>Exact solution is described as a system of ODEs</li>
+<li>Compact solutions exist for infinite horizon and small inventory/risk aversion</li>
+</ul></li>
+</ul>
+</section></section>
+<section><section id="stochastic-volatility" class="title-slide slide level1"><h1>Stochastic volatility</h1></section><section id="option-representation" class="slide level2">
+<h2>Option representation</h2>
+<p><em>Lemma</em> Let the market state process <span class="math inline">\((X_t)_{t\in[0,T]}\)</span> be a continuous semimartingale. Assume the existence of an ELMM <span class="math inline">\(\mathbb Q\)</span> where <span class="math inline">\((X_t)_{t\in[0,T]}\)</span> is a Markov process. Then, a no-arbitrage price process <span class="math inline">\((C_t)_{t\in[0,T]}\)</span> of an <span class="math inline">\(\mathcal F_T\)</span>-measurable claim <span class="math inline">\(f(X_T) \geq 0\)</span> is given by <span class="math display">\[  C_t = \varphi(t, X_t), \quad
+    \varphi(t, x) = \mathbb E^{\mathbb Q}[f(X_{T - t}) \mid X_0 = x]. \]</span></p>
+<p>If <span class="math inline">\(\varphi\)</span> is of class <span class="math inline">\(\mathcal C^{1, 2}(U)\)</span>, then <span class="math display">\[  dC_t = \nabla_x\varphi(t, X_t)dX_t, \quad \forall t \in [0, T). \]</span></p>
+</section><section id="small-time-asymptotics" class="slide level2">
+<h2>Small time asymptotics</h2>
+<p><em>Theorem</em> Let <span class="math inline">\(X\)</span> be a sufficiently integrable Itô diffusion, of the form</p>
+<p><span class="math display">\[ dX_t = \mu_t dt + \sigma_t dW_t, \]</span></p>
+<p><span class="math display">\[ \text{then } \frac{X_t - \tilde X_t}{\sqrt t} \xrightarrow{L^2} 0, \text{ as } t\to 0,\]</span></p>
+<p><span class="math display">\[ \text{where } d\tilde X_t = \sigma_0 dW_t. \]</span></p>
+</section><section id="heston-model-simulation" class="slide level2">
+<h2>Heston model simulation</h2>
+</section><section id="section-2" class="slide level2" data-background-iframe="20180528/heston.html">
+<h2></h2>
+</section><section id="role-of-stochastic-volatility" class="slide level2">
+<h2>Role of stochastic volatility</h2>
+<ul>
+<li>Applying small time asymptotics to option prices,</li>
+</ul>
+<p><span class="math display">\[ d\tilde C_t = \nabla_x\varphi(X_0) d\tilde X_t \]</span></p>
+<ul>
+<li>In particular, if the market state is <span class="math inline">\((S, V)\)</span>,</li>
+</ul>
+<p><span class="math display">\[ d\tilde C_t = \Delta_0 d\tilde S_t + \mathcal{V}_0 d\tilde V_t\]</span></p>
+<ul>
+<li>Options still depend on volatility
+<ul>
+<li>Despite prices losing stochastic volatility</li>
+<li>Volatility links different time scales</li>
+</ul></li>
+</ul>
+</section><section id="empirical-analysis" class="slide level2">
+<h2>Empirical analysis</h2>
+<ul>
+<li>Approach
+<ol>
+<li>Option representation gives option dynamics</li>
+<li>Small time asymptotics linearises option dynamics</li>
+</ol></li>
+<li>We obtain the linear model for options <span class="math display">\[ \begin{align}
+C_{t+h} - C_t = &amp; \Delta(S_{t+h} - S_t) \\
+&amp; + \mathcal{V}(V_{t+h} - V_t) + \epsilon_{t+h}.
+\end{align} \]</span></li>
+</ul>
+</section><section id="recovering-greeks" class="slide level2">
+<h2>Recovering Greeks</h2>
+<ul>
+<li><p>Microstructure effects don’t bias Greeks estimation</p></li>
+<li>Role of stochastic volatility
+<ul>
+<li>Contributes to explaining option price changes</li>
+<li>Enhance the explanatory power of the underlying price</li>
+</ul></li>
+<li>Vega is successfully recovered for the first time
+<ul>
+<li>Compare with <span class="citation" data-cites="abergel2012drives">(Abergel and Zaatour 2012)</span></li>
+</ul></li>
+</ul>
+</section><section id="heston-vs-empirical-delta-for-call-options" class="slide level2">
+<h2>Heston vs Empirical Delta for call options</h2>
+</section><section id="section-3" class="slide level2" data-background-image="20190716/compare_deltas_call.png" data-background-size="contain">
+<h2></h2>
+</section><section id="heston-vs-empirical-vega-for-call-options" class="slide level2">
+<h2>Heston vs Empirical Vega for call options</h2>
+</section><section id="section-4" class="slide level2" data-background-image="20190716/compare_vegas_call.png" data-background-size="contain">
+<h2></h2>
+</section></section>
+<section><section id="high-frequency-options-market-making" class="title-slide slide level1"><h1>High-frequency options market making</h1></section><section id="overview-1" class="slide level2">
+<h2>Overview</h2>
+<ul>
+<li>Incorporate stochastic volatility by using the model by <span class="citation" data-cites="fodra2013high">(Fodra and Labadie 2013)</span></li>
+<li>Develop extensions:
+<ol>
+<li>Incorporate option dynamics</li>
+<li>Let the quotes be a function of, e.g., moneyness and time to expiry</li>
+</ol></li>
+</ul>
+</section><section id="options-market-making-model" class="slide level2">
+<h2>Options market making model</h2>
+<ul>
+<li><p>Price dynamics <span class="math display">\[ dC_{t, p} = \Delta_{t, p} \cdot dS_t, \quad
+ dS_t = \mu_t dt + \sigma_t dW_t, \]</span></p></li>
+<li><p>Trade dynamics (<span class="math inline">\(n^\mathrm{ask}\)</span> and <span class="math inline">\(n^\mathrm{bid}\)</span> intensities)</p></li>
+</ul>
+<p><span class="math display">\[ \begin{align}
+\lambda_t^\mathrm{bid}(dp) &amp; = e^{-\kappa_{t, p} \delta_{t, p}^\mathrm{bid}} A_t(dp), \\
+\lambda_t^\mathrm{ask}(dp) &amp; = e^{-\kappa_{t, p} \delta_{t, p}^\mathrm{ask}} A_t(dp). 
+\end{align} \]</span></p>
+</section><section id="options-market-making-model-cont." class="slide level2">
+<h2>Options market making model (cont.)</h2>
+<ul>
+<li>Inventory process</li>
+</ul>
+<p><span class="math display">\[ q_t(dp) = \int_0^t n^\mathrm{bid}(ds \times dp)
+           - \int_0^t n^\mathrm{ask}(ds \times dp), \]</span></p>
+<ul>
+<li>Cash process</li>
+</ul>
+<p><span class="math display">\[ dX_t = \int_{\mathcal P} C^\mathcal{ask}_{t, p} n^\mathrm{ask}(dt \times dp) 
+        - \int_{\mathcal P} C^\mathcal{bid}_{t, p} n^\mathrm{bid}(dt \times dp). \]</span></p>
+</section><section id="options-market-making-model-cont.-1" class="slide level2">
+<h2>Options market making model (cont.)</h2>
+<ul>
+<li>Wealth process</li>
+</ul>
+<p><span class="math display">\[ Y_t = X_t + \int_{\mathcal P} C_{t, p} q_t(dp) \]</span></p>
+<ul>
+<li>Maximisation criterion</li>
+</ul>
+<p><span class="math display">\[ \mathbb E \left[ Y_T - \frac{1}{2} \gamma \int_{(0, T] \times \mathcal P^2} q_{t-}(dp)q_{t-}(dq)d[C_p, C_q]_t \right] \]</span></p>
+</section><section id="optimal-mid-price" class="slide level2">
+<h2>Optimal mid-price</h2>
+<p><span class="math display">\[ \begin{align}
+\frac{ C^\mathrm{bid}_{t, p} + C^\mathrm{ask}_{t, p}}{2} = 
+   &amp; \mathbb E \left[ C_{T, p} \mid \mathcal F_t \right]
+   - \gamma (T - t) \Delta_{t, p} \cdot \sigma_t \sigma_t^\top g_t \\
+   &amp; + o(T - t) + O(\gamma^2),
+\end{align} \]</span></p>
+<p><span class="math display">\[ g_t = \int_{\mathcal P} \Delta_{s, p} q_t(dp). \]</span></p>
+</section><section id="optimal-half-spread" class="slide level2">
+<h2>Optimal half-spread</h2>
+<p><span class="math display">\[ \begin{align}
+\frac{ C^\mathrm{ask}_{t, p} - C^\mathrm{bid}_{t, p}}{2} = 
+  &amp; \frac{1}{\kappa_{t, p}}
+  + \frac{1}{2} \gamma (T - t) \Delta_{t, p} \cdot \sigma_t \sigma_t^\top
+    \Delta_{t, p} \\ &amp; + o(T - t) + O(\gamma^2).
+\end{align} \]</span></p>
+</section><section id="structure-of-options-spreads" class="slide level2">
+<h2>Structure of options spreads</h2>
+<ol>
+<li>Spread does not depend on base trade activity</li>
+<li>Assume <span class="math inline">\(\kappa_{t, p}\)</span> is constant in moneyness</li>
+<li>Linear regression gives us <span class="math inline">\(\kappa\)</span> and <span class="math inline">\(\gamma\)</span></li>
+</ol>
+</section><section id="section-5" class="slide level2" data-background-image="20191203/optimal_spread_rel.png" data-background-size="contain">
+<h2></h2>
+</section><section id="trade-activity-versus-spreads" class="slide level2">
+<h2>Trade activity versus spreads</h2>
+</section><section id="section-6" class="slide level2" data-background-image="20191203/spread.png" data-background-size="contain">
+<h2></h2>
+</section><section id="section-7" class="slide level2" data-background-image="20191203/trade_activity.png" data-background-size="contain">
+<h2></h2>
+</section></section>
+<section><section id="conclusion" class="title-slide slide level1"><h1>Conclusion</h1></section><section id="conclusion-1" class="slide level2">
+<h2>Conclusion</h2>
+<ul>
+<li>Stochastic volatility drives high-frequency options prices</li>
+<li>Small risk aversion gives explicit optimal quotes</li>
+<li>Optimal spreads compatible with data</li>
+<li>Small spreads imply higher trade activity</li>
+</ul>
+</section><section id="thank-you" class="slide level2">
+<h2>Thank you!</h2>
+<ul>
+<li>Find this presentation and its source code at</li>
+</ul>
+<p><a href="https://github.com/dougmvieira/presentations" class="uri">https://github.com/dougmvieira/presentations</a></p>
+</section><section id="references" class="slide level2 unnumbered scrollable">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-abergel2012drives">
+<p>Abergel, Frédéric, and Riadh Zaatour. 2012. “What Drives Option Prices?” <em>Journal of Trading</em> 7 (3): 12–28.</p>
+</div>
+<div id="ref-baldacci2019algorithmic">
+<p>Baldacci, Bastien, Philippe Bergault, and Olivier Guéant. 2019. “Algorithmic Market Making: The Case of Equity Derivatives.” <em>arXiv Preprint arXiv:1907.12433</em>.</p>
+</div>
+<div id="ref-el2015stochastic">
+<p>El Aoud, Sofiene, and Frédéric Abergel. 2015. “A Stochastic Control Approach to Option Market Making.” <em>Market Microstructure and Liquidity</em> 1 (01). World Scientific: 1550006.</p>
+</div>
+<div id="ref-fodra2013high">
+<p>Fodra, Pietro, and Mauricio Labadie. 2013. “High-Frequency Market-Making for Multi-Dimensional Markov Processes.” <em>arXiv Preprint arXiv:1303.7177</em>.</p>
+</div>
+<div id="ref-stoikov2009option">
+<p>Stoikov, Sasha, and Mehmet Sağlam. 2009. “Option Market Making Under Inventory Risk.” <em>Review of Derivatives Research</em> 12 (1). Springer: 55–79.</p>
+</div>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script src="./lib/js/head.min.js"></script>
+  <script src="./js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: './lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: './plugin/zoom-js/zoom.js', async: true },
+          { src: './plugin/math/math.js', async: true },
+          { src: './plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>
