@@ -1,5 +1,13 @@
 # My reveal.js presentations hosted at GitHub Pages
 
+## 9 January 2020 - Industry talk
+
+- Presentation
+https://dougmvieira.github.io/presentations/20200109-presentation.html
+
+- Source code
+https://github.com/dougmvieira/20200109-industry-presentation
+
 ## 6 December 2019 - Imperial College London - Office talk
 
 - Presentation
