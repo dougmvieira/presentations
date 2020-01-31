@@ -1,5 +1,13 @@
 # My reveal.js presentations hosted at GitHub Pages
 
+## 31 January 2020 - Imperial College London - PhD day
+
+- Presentation
+https://dougmvieira.github.io/presentations/20200131-presentation.html
+
+- Source code
+https://github.com/dougmvieira/20200109-phd-day-presentation
+
 ## 9 January 2020 - Industry talk
 
 - Presentation

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Douglas Vieira">
+  <meta name="author" content="Imperial College London">
+  <meta name="author" content="Supervisors: Prof Rama Cont and Dr Mikko Pakkanen">
+  <meta name="dcterms.date" content="2020-01-31">
+  <title> High-frequency options market making</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="./css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="./css/theme/white.css" id="theme">
+  <link rel="stylesheet" href="scrollable.css"/>
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? './css/print/pdf.css' : './css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="./lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title"><small> High-frequency options market making </small></h1>
+  <p class="author">Douglas Vieira</p>
+  <p class="author">Imperial College London</p>
+  <p class="author">Supervisors: Prof Rama Cont and Dr Mikko Pakkanen</p>
+  <p class="date">31 January 2020</p>
+</section>
+<section id="TOC">
+<ul>
+<li><a href="#/introduction">Introduction</a></li>
+<li><a href="#/single-asset-market-making">Single-asset market making</a></li>
+<li><a href="#/options-market-making">Options market making</a></li>
+<li><a href="#/extensions">Extensions</a></li>
+<li><a href="#/conclusions">Conclusions</a></li>
+</ul>
+</section>
+
+<section><section id="introduction" class="title-slide slide level1"><h1>Introduction</h1></section><section id="literature" class="slide level2">
+<h2>Literature</h2>
+<ul>
+<li>Seminal market making paper: <span class="citation" data-cites="avellaneda2008high">(Avellaneda and Stoikov 2008)</span></li>
+<li>Options market making papers: <span class="citation" data-cites="stoikov2009option">(Stoikov and Sağlam 2009)</span>, <span class="citation" data-cites="el2015stochastic">(El Aoud and Abergel 2015)</span>, <span class="citation" data-cites="baldacci2019algorithmic">(Baldacci, Bergault, and Guéant 2019)</span></li>
+<li>We focus in high-frequency markets</li>
+</ul>
+</section><section id="features-of-vanilla-options" class="slide level2">
+<h2>Features of vanilla options</h2>
+<ul>
+<li>Stochastic volatility</li>
+<li>Highly correlation</li>
+<li>Options liquidity is linked to moneyness</li>
+<li>Friction in the underlying market</li>
+<li>Market maker has a small horizon</li>
+</ul>
+</section></section>
+<section><section id="single-asset-market-making" class="title-slide slide level1"><h1>Single-asset market making</h1></section><section id="section" class="slide level2" data-background-iframe="20190226/skew_plot.html">
+<h2></h2>
+</section><section id="section-1" class="slide level2" data-background-iframe="20190226/spread_plot.html">
+<h2></h2>
+</section><section id="model-setup" class="slide level2">
+<h2>Model setup</h2>
+<ul>
+<li><p>Reference price <span class="math display">\[ dS_t = \mu_t dt + \sigma_t dW_t \]</span></p></li>
+<li><p>Bid and ask prices <span class="math display">\[ S^\mathrm{bid}_t = S_t - \delta^\mathrm{bid}_t, \quad
+ S^\mathrm{ask}_t = S_t + \delta^\mathrm{ask}_t \]</span></p></li>
+<li><p>Counting processes <span class="math inline">\((N_t^\mathrm{bid}, N_t^\mathrm{ask})\)</span></p></li>
+<li><p>Intensity processes <span class="math display">\[ \lambda_t^\mathrm{bid} = e^{a_t - b_t \delta^\mathrm{bid}_t}, \quad
+ \lambda_t^\mathrm{ask} = e^{a_t - b_t \delta^\mathrm{ask}_t} \]</span></p></li>
+</ul>
+</section><section id="section-2" class="slide level2">
+<h2></h2>
+<ul>
+<li><p>Inventory process <span class="math display">\[ dq_t = dN^\mathrm{bid}_t - dN^\mathrm{ask}_t \]</span></p></li>
+<li><p>Cash process <span class="math display">\[ dC_t = S^\mathrm{ask}_t dN^\mathrm{ask}_t
+      - S^\mathrm{bid}_t dN^\mathrm{bid}_t \]</span></p></li>
+<li><p>Wealth process <span class="math display">\[ Y_t = C_t + S_t q_t \]</span></p></li>
+</ul>
+</section><section id="maximisation-criteria" class="slide level2">
+<h2>Maximisation criteria</h2>
+<ul>
+<li><p>CARA utility <span class="citation" data-cites="avellaneda2008high">(Avellaneda and Stoikov 2008)</span> <span class="math display">\[ \mathbb E \left[ -e^{ -\gamma \left( Y_T - \ell(q_T) \right) } \right] \]</span></p></li>
+<li><p>Quadratic running inventory penalty <span class="citation" data-cites="cartea2015algorithmic">(Cartea, Jaimungal, and Penalva 2015)</span> <span class="math display">\[ \mathbb E \left[ Y_T - \ell(q_T) - \frac{1}{2} \gamma \int_0^T q_t^2 d[S]_t \right] \]</span></p></li>
+</ul>
+</section><section id="optimal-controls-cara" class="slide level2">
+<h2>Optimal controls: CARA</h2>
+<p><span class="math display">\[ \begin{align*}
+\delta^\mathrm{bid}_t
+&amp; = \frac{1}{\gamma} \log\left( 1 + \frac{\gamma}{b_t} \right) \\
+&amp; - v(T - t, q_t + 1, \ldots) + v(T - t, q_t, \ldots), \\ \\
+\delta^\mathrm{ask}_t
+&amp; = \frac{1}{\gamma} \log\left( 1 + \frac{\gamma}{b_t} \right) \\
+&amp; - v(T - t, q_t - 1, \ldots) + v(T - t, q_t, \ldots)
+\end{align*} \]</span></p>
+</section><section id="section-3" class="slide level2">
+<h2></h2>
+<p>where <span class="math inline">\(v\)</span> solves the initial value problem</p>
+<p><span class="math display">\[ \begin{align*}
+\partial_\tau v + \frac{1}{2} \gamma \sigma^2 q^2
+&amp; = \mathcal L v + \mu q \\
+&amp; + \frac{1}{b} \left( 1 + \frac{\gamma}{b} \right)^{-1 - \frac{b}{\gamma}}
+    e^{a + b (v(\tau, q + 1, \ldots) - v(\tau, q, \ldots))} \\
+&amp; + \frac{1}{b} \left( 1 + \frac{\gamma}{b} \right)^{-1 - \frac{b}{\gamma}}
+    e^{a + b (v(\tau, q - 1, \ldots) - v(\tau, q, \ldots))} \\ \\
+v(0, q, z) &amp; = - \ell(q)
+\end{align*} \]</span></p>
+</section><section id="optimal-controls-inventory-penalty" class="slide level2">
+<h2>Optimal controls: inventory penalty</h2>
+<p><span class="math display">\[ \begin{align*}
+\delta^\mathrm{bid}_t
+&amp; = \frac{1}{b} - v(T - t, q_t + 1, \ldots) + v(T - t, q_t, \ldots), \\
+\delta^\mathrm{ask}_t
+&amp; = \frac{1}{b} - v(T - t, q_t - 1, \ldots) + v(T - t, q_t, \ldots)
+\end{align*} \]</span></p>
+</section><section id="section-4" class="slide level2">
+<h2></h2>
+<p>where <span class="math inline">\(v\)</span> solves the initial value problem</p>
+<p><span class="math display">\[ \begin{align*}
+\partial_\tau v + \frac{1}{2} \gamma \sigma^2 q^2
+  = \mathcal L v + \mu q
+&amp; + \frac{1}{b} e^{a - 1 + b (v(\tau, q + 1, \ldots) - v(\tau, q, \ldots))} \\
+&amp; + \frac{1}{b} e^{a - 1 + b (v(\tau, q - 1, \ldots) - v(\tau, q, \ldots))} \\
+v(0, q, z) = - \ell(q) \quad &amp;
+\end{align*} \]</span></p>
+</section><section id="exact-solution" class="slide level2">
+<h2>Exact solution</h2>
+<ul>
+<li><p>Under the CARA criterion, consider <span class="math display">\[ | q_t | \leq Q, \quad
+ \mu_t \equiv 0, \quad
+ \sigma_t \equiv \sigma, \quad
+ a_t \equiv a, \quad
+ b_t \equiv b \]</span></p></li>
+<li><p>Optimal controls are given by <span class="math display">\[ \begin{align*}
+\delta^\mathrm{bid}_t
+&amp; = \frac{1}{\gamma} \log\left( 1 + \frac{\gamma}{b} \right)
++ \frac{1}{b} \log\left(\frac{w_{q_t}(T - t)}{w_{q_t + 1}(T - t)} \right), \\
+\delta^\mathrm{ask}_t
+&amp; = \frac{1}{\gamma} \log\left( 1 + \frac{\gamma}{b} \right)
++ \frac{1}{b} \log\left(\frac{w_{q_t}(T - t)}{w_{q_t - 1}(T - t)} \right), \\
+w(\tau) &amp; = e^{-M \tau} \cdot 1
+\end{align*} \]</span></p></li>
+<li><p>See <span class="citation" data-cites="gueant2013dealing">(Guéant, Lehalle, and Fernandez-Tapia 2013)</span></p></li>
+</ul>
+</section><section id="small-horizon-asymptotic" class="slide level2">
+<h2>Small horizon asymptotic</h2>
+<ul>
+<li><p>Under the inventory penalty criterion, rescale time <span class="math display">\[ \begin{align*}
+\partial_\tau v + \frac{1}{2} \gamma \color{red}{\epsilon} \sigma^2 q^2
+= \color{red}{\epsilon} \mathcal L v + \color{red}{\epsilon} \mu q
+&amp; + \frac{1}{b} \color{red}{\epsilon}
+  e^{a - 1 + b (v(\tau, q + 1, \ldots) - v(\tau, q, \ldots))} \\
+&amp; + \frac{1}{b} \color{red}{\epsilon}
+  e^{a - 1 + b (v(\tau, q - 1, \ldots) - v(\tau, q, \ldots))} \\
+v(0, q, z) = - \ell(q) \quad &amp;
+\end{align*} \]</span></p></li>
+<li><p>Solve for <span class="math inline">\(\epsilon \to 0\)</span>.</p></li>
+</ul>
+</section><section id="optimal-quotes" class="slide level2">
+<h2>Optimal quotes</h2>
+<ul>
+<li>For brevity, we consider <span class="math inline">\(\ell \equiv 0\)</span>.</li>
+<li>Optimal spread and mid-price are given by <span class="math display">\[ \begin{align*}
+S^\mathrm{ask}_t - S^\mathrm{bid}_t
+&amp; = \frac{2}{b_t} + \gamma \sigma_t^2 (T - t)
++ O\left( (T - t)^2 \right), \\
+\frac{S^\mathrm{ask}_t + S^\mathrm{bid}_t}{2}
+&amp; = S_t + \mu_t (T - t) - \frac{1}{2} \gamma \sigma_t^2 q_t (T - t)
++ O\left( (T - t)^2 \right)
+\end{align*} \]</span></li>
+</ul>
+</section></section>
+<section><section id="options-market-making" class="title-slide slide level1"><h1>Options market making</h1></section><section id="modifications" class="slide level2">
+<h2>Modifications</h2>
+<ul>
+<li><p>Reference prices <span class="math display">\[ dV_t = \Delta_t dX_t, \quad 
+ dX_t = \mu_t dt + \sigma_t dW_t \]</span></p></li>
+<li><p>Intensity processes <span class="math display">\[ (\lambda_t^\mathrm{bid})_i 
+ = e^{(a_t)_i - (b_t)_i (\delta^\mathrm{bid}_t)_i}, \quad
+ (\lambda_t^\mathrm{ask})_i 
+ = e^{(a_t)_i - (b_t)_i (\delta^\mathrm{ask}_t)_i} \]</span></p></li>
+<li><p>Quadratic running inventory penalty criterion <span class="math display">\[ \mathbb E \left[ Y_T - \ell(q_T) 
+ - \frac{1}{2} \gamma \int_0^T q_t \cdot d[V]_t q_t \right] \]</span></p></li>
+</ul>
+</section><section id="asymptotic-optimal-quotes" class="slide level2">
+<h2>Asymptotic optimal quotes</h2>
+<p><span class="math display">\[ \begin{align*}
+\left(V^\mathrm{ask}_t - V^\mathrm{bid}_t\right)_i
+  = &amp; \frac{2}{\kappa}
+  + \gamma (\Delta_t)_{i, \bullet}
+    \cdot \sigma_t (T - t) \sigma_t^\top (\Delta_t)_{i, \bullet} \\
+&amp; + O\left( (T - t)^2 \right), \\
+\frac{\left( V^\mathrm{ask}_t + V^\mathrm{bid}_t \right)_i}{2}
+= &amp; V_t + (\Delta_t)_{i, \bullet} \cdot \mu_t (T - t) \\
+&amp; - \frac{1}{2} \gamma \Delta_{i, \bullet}
+    \cdot \sigma_t (T - t) \sigma_t^\top g_t \\
+&amp; + O\left( (T - t)^2 \right), \\
+g_t = &amp; \Delta_t^\top q_t
+\end{align*} \]</span></p>
+</section><section id="structure-of-options-spreads" class="slide level2">
+<h2>Structure of options spreads</h2>
+<ol>
+<li>Spread ignores inventory and base trade activity</li>
+<li>Assume <span class="math inline">\(b_t \equiv \kappa\)</span></li>
+<li>Linear regression on volatility gives us <span class="math inline">\(\kappa\)</span> and <span class="math inline">\(\gamma\)</span></li>
+</ol>
+</section><section id="section-5" class="slide level2" data-background-image="20200109/optimal_spread.png" data-background-size="contain">
+<h2></h2>
+</section></section>
+<section><section id="extensions" class="title-slide slide level1"><h1>Extensions</h1></section><section id="cross-effects-in-intensities" class="slide level2">
+<h2>Cross-effects in intensities</h2>
+<ul>
+<li><p>Given a vector <span class="math inline">\(a_t\)</span> and a matrix <span class="math inline">\(b_t\)</span>, define <span class="math display">\[ \lambda^\bullet_t = e^{a_t + b_t \delta^\bullet_t}. \]</span></p></li>
+<li><p>Let <span class="math inline">\(b_t\)</span> be of the form <span class="math display">\[ b_t = \kappa I + \Delta_t D \Delta_t^\top \]</span></p></li>
+</ul>
+</section><section id="section-6" class="slide level2">
+<h2></h2>
+<ul>
+<li>Optimal spread becomes</li>
+</ul>
+<p><span class="math display">\[ \begin{align*}
+\left(V^\mathrm{ask}_t - V^\mathrm{bid}_t\right)_i
+= &amp; 2 (\tilde\Delta_t)_{i, \bullet}
+     \cdot \tilde\Delta_t c_i \\
+&amp; + \gamma \Delta_{i, \bullet}
+    \cdot \sigma_t (T - t) \sigma_t^\top (\Delta_t)_{i, \bullet} \\
+&amp; + O\left( (T - t)^2 \right), \\
+\end{align*} \]</span> <span class="math display">\[ c_i = \frac{1}{\kappa + \tilde D_{ii}}, \quad
+\Delta_t D \Delta_t^\top = \tilde\Delta_t \tilde D \tilde\Delta_t^\top \]</span></p>
+</section><section id="power-law-decay" class="slide level2">
+<h2>Power-law decay</h2>
+<ul>
+<li><p>Uncoupled trading intensities <span class="math display">\[ (\lambda^\bullet_t)_i = (A_t)_i (\delta^\bullet_t)^{-(b_t)_i}_i \]</span></p></li>
+<li><p>Coupled trading intensities <span class="math display">\[ \lambda^\bullet_t = e^{a_t - b_t \log(\delta_t)} \]</span></p></li>
+<li>Already done for optimal execution with limit orders
+<ul>
+<li>See <span class="citation" data-cites="bayraktar2014liquidation">(Bayraktar and Ludkovski 2014)</span></li>
+</ul></li>
+<li><p>Data seems to fit power-law better than exponential</p></li>
+</ul>
+</section><section id="section-7" class="slide level2" data-background-image="20200109/intensities_fit.png" data-background-size="contain">
+<h2></h2>
+</section></section>
+<section><section id="conclusions" class="title-slide slide level1"><h1>Conclusions</h1></section><section id="conclusion" class="slide level2">
+<h2>Conclusion</h2>
+<ul>
+<li>Small time to horizon gives explicit optimal quotes</li>
+<li>Optimal spreads compatible with data</li>
+<li>Possible to couple trading intensities</li>
+<li>Intensity decay might be better fit as a power law</li>
+</ul>
+</section><section id="thank-you" class="slide level2">
+<h2>Thank you!</h2>
+<ul>
+<li>Find this presentation and its source code at</li>
+</ul>
+<p><a href="https://github.com/dougmvieira/presentations" class="uri">https://github.com/dougmvieira/presentations</a></p>
+</section><section id="references" class="slide level2 unnumbered scrollable">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-avellaneda2008high">
+<p>Avellaneda, M., and S. Stoikov. 2008. “High-Frequency Trading in a Limit Order Book.” <em>Quantitative Finance</em> 8 (3). Taylor &amp; Francis: 217–24.</p>
+</div>
+<div id="ref-baldacci2019algorithmic">
+<p>Baldacci, Bastien, Philippe Bergault, and Olivier Guéant. 2019. “Algorithmic Market Making: The Case of Equity Derivatives.” <em>arXiv Preprint arXiv:1907.12433</em>.</p>
+</div>
+<div id="ref-bayraktar2014liquidation">
+<p>Bayraktar, Erhan, and Michael Ludkovski. 2014. “Liquidation in Limit Order Books with Controlled Intensity.” <em>Mathematical Finance</em> 24 (4). Wiley Online Library: 627–50.</p>
+</div>
+<div id="ref-cartea2015algorithmic">
+<p>Cartea, Álvaro, Sebastian Jaimungal, and José Penalva. 2015. <em>Algorithmic and High-Frequency Trading</em>. Cambridge University Press.</p>
+</div>
+<div id="ref-el2015stochastic">
+<p>El Aoud, Sofiene, and Frédéric Abergel. 2015. “A Stochastic Control Approach to Option Market Making.” <em>Market Microstructure and Liquidity</em> 1 (01). World Scientific: 1550006.</p>
+</div>
+<div id="ref-gueant2013dealing">
+<p>Guéant, O., C.-A. Lehalle, and J. Fernandez-Tapia. 2013. “Dealing with Inventory Risk. A Solution to the Market Making Problem.” <em>Mathematics and Financial Economics</em> 7 (4): 477–507.</p>
+</div>
+<div id="ref-stoikov2009option">
+<p>Stoikov, Sasha, and Mehmet Sağlam. 2009. “Option Market Making Under Inventory Risk.” <em>Review of Derivatives Research</em> 12 (1). Springer: 55–79.</p>
+</div>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script src="./lib/js/head.min.js"></script>
+  <script src="./js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: './lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: './plugin/zoom-js/zoom.js', async: true },
+          { src: './plugin/math/math.js', async: true },
+          { src: './plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>
