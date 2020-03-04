@@ -136,14 +136,14 @@ S^\mathrm{ask}_t - S^\mathrm{bid}_t
 <h2>Stochastic volatility</h2>
 <p>For a nice stochastic volatility model</p>
 <p><span class="math display">\[ \begin{align}
-dS_t &amp; = \mu_t dt + \sigma(V_t) dW^1_t, \\
-dV_t &amp; = \alpha_t dt + \nu(V_t) dW^2_t, \\
+dS_t &amp; = \mu_t dt + \sigma_t dW^1_t, \\
+d\sigma_t &amp; = \alpha_t dt + \beta_t dW^2_t, \\
 \end{align} \]</span></p>
 <p>a European-type option follows the small time dynamics</p>
 <p><span class="math display">\[ \begin{align}
-d\tilde S_t &amp; = \sigma(V_0) dW^1_t, \quad
-d\tilde V_t   = \nu(V_0) dW^2_t, \\
-d\tilde C_t &amp; = \Delta_0 d\tilde S_t + \mathcal V_0 d\tilde V_t \\
+d\tilde S_t &amp; = \sigma_0 dW^1_t, \quad
+d\tilde \sigma_t   = \beta_0 dW^2_t, \\
+d\tilde V_t &amp; = \Delta_0 d\tilde S_t + \mathcal V_0 d\tilde \sigma_t \\
 \end{align} \]</span></p>
 </section><section id="section-3" class="slide level2" data-background-image="20200304/r2_call.png" data-background-size="contain">
 <h2></h2>
@@ -176,7 +176,7 @@ d\tilde C_t &amp; = \Delta_0 d\tilde S_t + \mathcal V_0 d\tilde V_t \\
 <h2>Asymptotic optimal quotes</h2>
 <p><span class="math display">\[ \begin{align*}
 \left(V^\mathrm{ask}_t - V^\mathrm{bid}_t\right)_i
-  = &amp; \frac{2}{\kappa}
+  = &amp; \frac{2}{(b_t)_i}
   + \gamma (\Delta_t)_{i, \bullet}
     \cdot \sigma_t (T - t) \sigma_t^\top (\Delta_t)_{i, \bullet} \\
 &amp; + O\left( (T - t)^2 \right), \\
